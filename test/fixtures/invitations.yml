@@ -1,0 +1,14 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  sender_id: 1
+  invited_id: 2
+  company_id: 1
+
+two:
+  id: 2
+  sender_id: 2
+  invited_id: 1
+  company_id: 2
+

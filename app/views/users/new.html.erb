@@ -1,0 +1,20 @@
+<%= stylesheet_link_tag "login.css" %>
+
+<!-- Registration from, show if there is an error -->
+<%= form_with scope: :user, url: users_path, class: "form-signin",local: true do |form| %>
+	<% if @new_user.errors.any? %>
+		<div class="alert alert-danger" role="alert"> Sorry, registration failed. </div>
+		<% @new_user.errors.keys.each do |key| %>
+			<div class="alert alert-warning" role="alert"><%= key.to_s.capitalize + " " + @new_user.errors[key][0] %></div>
+		<% end %>
+	<% end %>
+	<h1 class="h3 mb-3 font-weight-normal">GUILD</h1>
+	<h3 class="h3 mb-3 font-italic">Register</h3>
+	<%= form.text_field :username, autofocus: true, class: "form-control", placeholder: "Username" %>
+	<%= form.text_field :email, class: "form-control", placeholder: "Email" %><br>
+	<%= form.password_field :password, class: "form-control", placeholder: "Password" %>
+	<%= form.password_field :password_confirmation, class: "form-control", placeholder: "Confirm password" %>
+	<%= form.submit "Register", class: "btn btn-lg btn-info btn-block" %>
+	<p class="mt-5 mb-3 text-muted">log101 - 2019</p>
+	<%= link_to "Go Back", root_path %>
+<% end %>

@@ -1,0 +1,177 @@
+<%= stylesheet_link_tag "album.css" %>
+<%if alert %>
+	<div class="container">
+		<div class="alert alert-danger">
+			<%= alert %>	
+		</div>
+	<% end %>
+	</div>
+
+
+	<header>
+		<div class="collapse bg-dark" id="navbarHeader">
+			<div class="container">
+				<% if @user.id.to_i == session[:user_id].to_i %>
+				<div class="row">
+					<div class="col-sm-8 col-md-7 py-4">
+						<h4 class="text-white">Invitations:</h4>
+						<p class="text-muted">
+						<div id="user_invitations">
+							<ul>
+								<%if @invitations != nil && @invitations.count != 0 %>
+									<% @invitations.each do |inv| %>
+										<li style={color:"white";}><%= Company.find(inv.company_id).name %>
+										<%= link_to "Accept", 
+											company_invitation_path(inv.company_id)+"/accept", 
+											method: :delete%>
+										<%= link_to "Reject",
+											company_invitation_path(inv.company_id)+"/reject", 
+											method: :delete%>
+									</li>
+								<% end %>
+							<% end %>
+							</ul>
+						</div>
+						</p>
+					</div>
+				</div>
+			<% end %>
+			</div>
+		</div>
+		<div class="navbar navbar-dark bg-dark shadow-sm">
+			<div class="container d-flex justify-content-between">
+				<a href="#" class="navbar-brand d-flex align-items-center">
+					<strong>GUILD</strong>
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+			</div>
+		</div>
+	</header>
+
+	<main role="main">
+
+	<section class="jumbotron">
+		<div class="container">
+			
+			<% if @user.id.to_i == session[:user_id].to_i %>
+				<h1 class="jumbotron-heading"><%= "Hi, " + @user.username %></h1>
+			<% else %>
+				<h1 class="jumbotron-heading"><%= "#{@user.username}'s Page" %></h1>
+			<% end %>
+			<p class="lead text-muted">
+			<!-- #Show user's tags -->
+			<div id="user_tags">
+					<%if @user.tags %>
+						<% @user.tags.each do |tag| %>
+							<span class="badge badge-warning"><%= link_to "#{tag.body}", [tag.user, tag] ,	method: :delete %></span>
+						<% end %>
+					<% end %>
+			</div>
+			</p>
+			<% if @user.id.to_i == session[:user_id].to_i %>	
+				<p class="lead text-muted">
+				<div id="user_companies">
+					<% if @companies != nil && @companies.count != 0 %>
+						<ul class="list-group">
+							<% @companies.each do |comp| %>
+								<li class="list-group-item">
+									<%= comp.name %><%= link_to 'See', comp %>	
+								</li>				
+							<% end %>
+						</ul>
+					<% else %>
+						<h3 class="text-muted">You do not lead any organization.</h3>
+					<% end %>
+				</div>
+				</p>
+				<p>
+				<a href="#organization_form" class="btn btn-primary my-2">Add Organization</a>
+				</p>
+				<p class="lead text-muted">
+				<div id="member_companies">
+					<% if @member_companies != nil && @member_companies.count != 0 %>
+						<ul class="list-group">
+							<% @member_companies.each do |mem| %>
+								<li class="list-group-item">
+									<%= Company.find(mem.company_id).name %><%= link_to 'View', Company.find(mem.company_id) %>
+								</li>
+							<% end %>
+						</ul>
+					<% else %>
+						<h3 class="text-muted">You are not a member of any organization.</h3>
+					<% end %>
+				</div>
+				</p>
+				<p>
+				<button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">Check invitations</button>
+				</p>
+		</div>
+	</section>
+<%end%>
+
+<% if @user.id.to_i == session[:user_id].to_i %>
+	<div class="album py-5 bg-light">
+		<div class="container"> 
+			<h3 class="text-center">Create a new organization</h3>
+			<% if @new_company %>
+				<% if @new_company.errors.any? %>
+					<div id="company_error_explanation">
+						<ul class="list_group">
+							<% @new_company.errors.full_messages.each do |msg| %>
+								<li class="list-group-item"><%= msg %></li>
+							<% end %>
+						</ul>
+					</div>
+				<% end %>
+			<% end %>
+			<%= form_with scope: :company, id: "organization_form", url: companies_path, local: true do |form| %>
+				<div class="form-group">
+					<%= form.label :name %><br>
+					<%= form.text_field :name, class: "form-control", 
+						placeholder: "Organization Name"%><br>
+						<%= form.label :description %><br>
+						<%= form.text_area :description, class: "form-control",
+							placeholder: "Organization Description"%>
+			</div>
+			<%= form.submit "Create Organization", 
+				class: "btn btn-primary btn-lg btn-block" %>
+	</div>
+<%end%>
+<%end%>
+<% if session[:user_id].to_i != @user.id.to_i %>
+<!-- Add a new tag form, show if there is an error -->
+<% if @new_tag %>
+	<% if @new_tag.errors.any? %>
+		<div id="tag_error_explanation">
+			<ul>
+				<% @new_tag.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+<% end %>
+<%= form_with scope: :tag, url: user_tags_path(@user), class:"form-inline", local: true do |form| %>
+	<%= form.label "Add a new tag", class:"mb-2 mr-sm-2"%>
+	<%= form.text_field :body, class:"form-control mb-2 mr-sm-2", 
+		placeholder:"Tag" %>
+	<%= form.submit "Add", class:"btn btn-primary mb-2" %>
+<%end%>
+	<%end%>
+	</div>
+	</div>
+
+	</main>
+
+	<footer class="text-muted">
+		<div class="container">
+			<p class="float-right">
+			<a href="#">Back to top</a>
+			</p>
+			<h3><%= link_to 'Logout', logout_path , method: :delete %></h3>
+			<h5><%= link_to 'Delete Account', user_path(@user), method: :delete %></h5>
+			<p class="text-center">lg101 - 2019</p>
+		</div>
+	</footer>

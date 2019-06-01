@@ -1,0 +1,93 @@
+<h1> Hello <%= @user.username %></h1>
+<!-- Show invitations -->
+<div id="user_invitations">
+	<ul>
+		<%if @invitations != nil && @invitations.count != 0 %>
+		<% @invitations.each do |inv| %>
+			<li><%= Company.find(inv.company_id).name %>
+		<%= link_to "accept", 
+				company_invitation_path(inv.company_id)+"/accept" , method: :delete%>
+		<%= link_to "reject",
+				company_invitation_path(inv.company_id)+"/reject" , method: :delete%>
+		</li>
+			<% end %>
+		<% end %>
+	</ul>
+</div>
+<!-- #Show user's tags -->
+<div id="user_tags">
+	<h3>You are tagged as:</h3>
+	<ul>
+		<%if @user.tags %>
+		<% @user.tags.each do |tag| %>
+				<li><%= tag.body %> <%= link_to 'delete tag', [tag.user, tag] , 
+					method: :delete %> </li>
+			<% end %>
+		<% end %>
+	</ul>
+</div>
+
+<!-- Add a new tag form, show if there is an error -->
+<h3>Add a new tag</h3>
+<% if @new_tag %>
+	<% if @new_tag.errors.any? %>
+		<div id="tag_error_explanation">
+			<ul>
+				<% @new_tag.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+<% end %>
+<%= form_with scope: :tag, url: user_tags_path(@user), local: true do |form| %>
+	<p>
+	<%= form.label :body %>
+	<%= form.text_field :body %>
+	<%= form.submit "Add" %>
+	</p>
+<%end%>
+
+<!-- Show companies owned by user -->
+<div id="user_companies">
+	<% if @companies != nil && @companies.count != 0 %>
+	<% # if @companies #Company.where("owner_id = ?", @user.id) %>
+		<h3>Your companies:</h3>
+		<ul>
+			<% @companies.each do |comp| %>
+				<li>
+					<%= comp.name %><%= link_to 'See', comp %>	
+				</li>				
+			<% end %>
+		</ul>
+	<%else%>
+		<h3> You do not own any company!</h3>
+	<% end %>	
+</div>
+
+
+<!-- Create a new company, show if there is an error -->
+<h3>Create a new company</h3>
+<% if @new_company %>
+	<% if @new_company.errors.any? %>
+		<div id="company_error_explanation">
+			<ul>
+				<% @new_company.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+<% end %>
+<%= form_with scope: :company, url: companies_path , local: true do |form| %>
+	<p>
+	<%= form.label :name %><br>
+	<%= form.text_field :name %><br>
+	<%= form.label :description %><br>
+	<%= form.text_area :description %>
+	<%= form.submit "Add" %>
+	</p>
+<%end%>
+
+<p>	<%= link_to 'Destroy', user_path(@user), method: :delete %>|
+<%= link_to 'Logout', logout_path , method: :delete %> </p>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  body: "longesttagever"
+  user: one
+
+two:
+  body: "tagtagtag"
+  user: two
+
+three:
+  body: "company_tag"
+  company: one

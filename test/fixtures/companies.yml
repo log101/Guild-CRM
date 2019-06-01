@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  name: "bismillahco"
+  owner_id: 1
+
+two:
+  id: 2
+  name: "furkanco"
+  owner_id: 2
