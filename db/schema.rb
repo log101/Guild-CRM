@@ -86,7 +86,6 @@ ActiveRecord::Schema.define(version: 2019_05_31_205508) do
     t.index ["user_id"], name: "index_workers_on_user_id"
   end
 
-  #add_foreign_key "company_contacts", "companies"
   add_foreign_key "invitations", "companies"
   add_foreign_key "user_contacts", "users"
 end

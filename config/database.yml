@@ -17,3 +17,8 @@ test:
   database: guild_test
   pool: 5
   timeout: 5000
+production:
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: guild_production
